@@ -1,14 +1,13 @@
 #!/usr/bin/python
-#  quick hack: auto clock-in tool
 
+#  quick hack: auto clock-in tool 
 import urllib2
 import urllib 
 import cookielib
 
-username = '' # enter your username for internal
-password = '' # enter your password for internal
-domain   = '' # enter your company domain
-
+username = '' # fill your internal username
+password = '' # fill clock pw
+domain   = '' # put your companyname.com
 
 refer = 'https://internal.' + domain + '/account/login'
 argUrl = 'https://internal.' + domain + '/account/login'
@@ -44,11 +43,15 @@ after_id  = data.find('\">', before_id)
 
 #cut out the id
 id_start = before_id + len(id_search_str)
-id       = data[id_start:(after_id - 1)]
+id       = data[id_start:(after_id)]
 
 #clock in
-req=urllib2.Request(url=(clock + id))
+clockUrl = clock + id
+req=urllib2.Request(url=clockUrl)
+req.add_header('Referer', 'https://internal.' + domain + '/account/view?id=' + id)
 opener.open(req)
+
+print 'clockUrl = ' + clockUrl
 
 #log out
 req = urllib2.Request(url=logout)
